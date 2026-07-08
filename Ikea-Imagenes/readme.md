@@ -17,7 +17,7 @@ Las chinchetas y la vista de las mismas nunca salen de las imágenes, por lo que
 Aquí puedes ver una vista previa del diseño y cómo funciona la creación de chinchetas sobre la imagen.
 
 ### Imagen principal donde se muestra un botón para ver las imágenes, un botón rojo para borrar todas las chinchetas y la chincheta con el modal
-<img src="./assets/principal.png" alt="Vista de la imagen con chinchetas" width="40%">
+<img src="./assets/Principal.png" alt="Vista de la imagen con chinchetas" width="40%">
 
 ### Modal para añadir un nuevo punto de información y chincheta junto a la información
 <img src="./assets/modal.png" alt="Modal para añadir datos del producto" width="40%">   <img src="./assets/chincheta.png" alt="Modal para añadir datos del producto" width="36.5%">
