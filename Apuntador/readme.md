@@ -12,7 +12,7 @@ Aplicación web para registrar anotaciones (CRUD) y visualizarlas de forma estru
 Aquí puedes ver una vista previa del diseño principal y el funcionamiento de la demostración.
 
 ### Imagen principal para apuntar las cosas
-<img src="./assets/principal.png" alt="Imagen principal" width="50%">
+<img src="./assets/Principal.png" alt="Imagen principal" width="50%">
 
 ### Tabla para mostrar lo apuntado
 <img src="./assets/tabla.png" alt="tabla" width="50%">
