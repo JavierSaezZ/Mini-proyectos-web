@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notas de Gatitos Arrastrables (Con Esquina Interactiva)</title>
+  <style>
+    /* --- ESTILOS GENERALES Y TEMA --- */
+    body {
+      background-color: #fff8e8;
+      font-family: 'Fredoka One', 'Arial Rounded MT Bold', Arial, sans-serif;
+      color: #333;
+      margin: 0;
+      overflow: hidden;
+      perspective: 1000px; /* Para la animación 3D */
+    }
+
+    #tablon {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+
+    #add-note-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #7d604f;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 32px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.2s, transform 0.2s;
+      z-index: 10000;
+    }
+
+    #add-note-btn:hover {
+      background-color: #6d4e3f;
+      transform: scale(1.1);
+    }
+
+    /* --- NOTA ARRASTRABLE --- */
+    .draggable {
+      width: 300px;
+      background-color: #fffbe8;
+      border-radius: 15px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      position: absolute;
+      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, opacity 0.5s;
+      will-change: transform, opacity;
+      z-index: 1;
+      border: 1px solid #967259;
+      backface-visibility: hidden;
+    }
+
+    .draggable:hover {
+      transform: scale(1.03) translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* --- MANIJA (3 RAYAS) --- */
+    .drag-handle {
+      width: 100%;
+      padding: 10px 0;
+      background-color: #ffb761;
+      cursor: grab;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-top-left-radius: 14px;
+      border-top-right-radius: 14px;
+    }
+
+    .drag-handle:active {
+      cursor: grabbing;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 25px;
+      height: 12px;
+    }
+
+    .menu span {
+      width: 100%;
+      height: 2px;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 2px;
+    }
+
+    /* --- CABECERA --- */
+    .note-header {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 10px;
+      margin-bottom: 5px;
+    }
+
+    .cat-icon {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .note-title {
+      font-weight: bold;
+      font-size: 18px;
+      color: #6d4e3f;
+      border: none;
+      width: 100%;
+      background: transparent;
+      outline: none;
+      min-height: 20px;
+      max-height: 40px;
+      overflow: hidden;
+      resize: none;
+      line-height: 20px;
+      padding: 5px;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+
+    /* --- CUERPO --- */
+    .note-body {
+      width: 100%;
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 14px;
+      color: #7d604f;
+      resize: none;
+      height: 150px;
+      font-family: Arial, sans-serif;
+      padding: 15px;
+      box-sizing: border-box;
+      border-top: 1px dashed #d4a14b;
+      border-bottom-left-radius: 15px;
+      border-bottom-right-radius: 15px;
+    }
+
+    /* --- ESQUINA INTERACTIVA (EL BOTÓN DE DESPEGAR) --- */
+    .peel-corner {
+      position: absolute;
+      bottom: -1px;
+      right: -1px;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 0 0 0 0; /* Invisible por defecto */
+      border-color: transparent transparent #dca358 transparent; /* Color de la parte de atrás del papel */
+      border-bottom-right-radius: 15px; /* Se ajusta a la curva de la nota */
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      z-index: 10;
+    }
+
+    /* Al pasar el ratón por la nota, la esquina crece (se dobla) */
+    .draggable:hover .peel-corner {
+      border-width: 0 0 40px 40px; 
+      box-shadow: -3px -3px 6px rgba(0, 0, 0, 0.15); /* Añade sombra al doblez */
+    }
+
+    /* Efecto extra si pones el ratón justo sobre la esquina doblada */
+    .peel-corner:hover {
+      border-width: 0 0 45px 45px;
+      border-color: transparent transparent #c8914b transparent; /* Se oscurece un pelín */
+    }
+    /* --- EL TOQUE MÁGICO: Sombra dinámica sobre el propio papel --- */
+    .draggable::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border-radius: inherit; /* Copia las deformaciones exactas de la nota */
+      /* Un degradado oscuro en la esquina por donde tiramos */
+      background: linear-gradient(135deg, rgba(255,255,255,0) 30%, rgba(109, 78, 63, 0.1) 60%, rgba(109, 78, 63, 0.4) 100%);
+      opacity: 0;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    /* Hacemos que la sombra aparezca progresivamente mientras se enrolla */
+    .peeling::before {
+      animation: paperShadow 0.85s ease-in forwards;
+    }
+
+    @keyframes paperShadow {
+      0% { opacity: 0; }
+      45% { opacity: 1; } /* Máxima sombra cuando la curvatura es máxima */
+      100% { opacity: 1; }
+    }
+
+    /* --- ANIMACIÓN DE DESPEGADO: NIVEL DIOS --- */
+    @keyframes peelOut {
+      0% {
+        transform-origin: top left;
+        border-bottom-right-radius: 15px;
+        transform: perspective(1200px) rotateX(0deg) rotateY(0deg) skew(0deg) translateZ(0) scale(1.03) translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        filter: brightness(1); /* Luz normal */
+        opacity: 1;
+      }
+      20% {
+        /* PASO 1: Resistencia. Tiras, el papel se enrolla profundo pero el pegamento aguanta. */
+        transform-origin: top left;
+        border-bottom-right-radius: 120px 180px;
+        /* Añadimos SKEWX para simular la torsión diagonal de las fibras del papel */
+        transform: perspective(1200px) rotateX(20deg) rotateY(-20deg) skewX(-5deg) translateZ(30px) translateX(-5px);
+        box-shadow: -15px 25px 20px rgba(0, 0, 0, 0.2);
+        filter: brightness(0.95);
+        opacity: 1;
+      }
+      45% {
+        /* PASO 2: Punto crítico. Máxima tensión, a punto de romperse la adherencia. */
+        transform-origin: top left;
+        border-bottom-right-radius: 250px 350px;
+        border-top-right-radius: 30px;
+        transform: perspective(1200px) rotateX(50deg) rotateY(-40deg) skewX(-15deg) translateZ(80px) translateX(-25px) translateY(-20px) scale(0.9);
+        box-shadow: -35px 50px 25px rgba(0, 0, 0, 0.15);
+        filter: brightness(0.85); /* La parte de atrás se oscurece porque tapa la luz */
+        opacity: 0.95;
+      }
+      65% {
+        /* PASO 3: ¡ZAS! El pegamento cede de golpe. Se retuerce sobre sí mismo. */
+        transform-origin: top left;
+        border-bottom-right-radius: 350px 450px;
+        border-top-right-radius: 80px;
+        border-bottom-left-radius: 50px;
+        transform: perspective(1200px) rotateX(75deg) rotateY(-60deg) skewX(-25deg) translateZ(180px) translateX(-60px) translateY(-60px) scale(0.7);
+        box-shadow: -50px 80px 30px rgba(0, 0, 0, 0.05);
+        filter: brightness(0.7);
+        opacity: 0.8;
+      }
+      100% {
+        /* PASO 4: Vuela retorcido (hecho un canuto) y desaparece en la distancia. */
+        transform-origin: top left;
+        border-radius: 200px; /* Completamente arrugado */
+        transform: perspective(1200px) rotateX(130deg) rotateY(-90deg) skewX(-30deg) translateZ(400px) translateX(-150px) translateY(-150px) scale(0.3);
+        box-shadow: -100px 150px 50px rgba(0, 0, 0, 0);
+        filter: brightness(0.4);
+        opacity: 0;
+      }
+    }
+
+    .peeling {
+      /* Usamos un cubic-bezier personalizado: empieza retenido (0.3, 0) y acelera brutalmente al final (0.8, 1) simulando el desgarro */
+      animation: peelOut 0.85s cubic-bezier(0.3, 0, 0.8, 1) forwards !important;
+      pointer-events: none; 
+    }
+
+    /* Ocultamos el doblez falso al instante para no romper la ilusión */
+    .peeling .peel-corner {
+      opacity: 0;
+      transition: opacity 0.1s;
+    }
+  </style>
+</head>
+
+<body>
+  <button id="add-note-btn">+</button>
+  <section id="tablon"></section>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const board = document.getElementById("tablon");
+      const addNoteBtn = document.getElementById("add-note-btn");
+      const NOTE_KEY_PREFIX = "kitten-note-";
+
+      const createNoteElement = (id, data) => {
+        const note = document.createElement("div");
+        note.classList.add("draggable");
+        note.id = id;
+
+        // Estructura HTML (Añadido .peel-corner y quitado la 'X')
+        note.innerHTML = `
+                <div class="drag-handle">
+                    <div class="menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+                <div class="note-header">
+                    <img src="cat.webp" alt="Gatito icon" class="cat-icon">
+                    <textarea class="note-title" placeholder="Mis pensamientos de gatito..."></textarea>
+                </div>
+                <textarea class="note-body" placeholder="Sabiduría de bigotes aquí..."></textarea>
+                <div class="peel-corner" title="Haz clic para despegar la nota"></div>
+            `;
+
+        const title = note.querySelector(".note-title");
+        const body = note.querySelector(".note-body");
+        const peelCorner = note.querySelector(".peel-corner");
+
+        if (data) {
+          note.style.left = `${data.left}px`;
+          note.style.top = `${data.top}px`;
+          note.style.zIndex = data.zIndex;
+          title.value = data.title;
+          body.value = data.body;
+        } else {
+          note.style.left = '50px';
+          note.style.top = '50px';
+          note.style.zIndex = getNextZIndex();
+          title.value = '';
+          body.value = '';
+          saveNote(note); 
+        }
+
+        const dragHandle = note.querySelector('.drag-handle');
+        dragHandle.addEventListener('mousedown', (e) => startDrag(e, note));
+
+        title.addEventListener('input', () => saveNote(note));
+        body.addEventListener('input', () => saveNote(note));
+
+        // --- LÓGICA: Clic en la esquina para borrar ---
+        peelCorner.addEventListener('click', (e) => {
+          e.stopPropagation(); // Evitar comportamientos raros
+          removeNote(note);
+        });
+
+        return note;
+      };
+
+      let highestZ = 1;
+      const getNextZIndex = () => highestZ++;
+
+      const loadNotes = () => {
+        const noteKeys = Object.keys(localStorage).filter(key => key.startsWith(NOTE_KEY_PREFIX));
+        noteKeys.forEach(key => {
+          const data = JSON.parse(localStorage.getItem(key));
+          if (data) {
+            if (data.zIndex >= highestZ) highestZ = data.zIndex + 1;
+            const note = createNoteElement(key, data);
+            board.appendChild(note);
+          }
+        });
+      };
+
+      const saveNote = (note) => {
+        const data = {
+          left: note.offsetLeft,
+          top: note.offsetTop,
+          zIndex: note.style.zIndex,
+          title: note.querySelector(".note-title").value,
+          body: note.querySelector(".note-body").value,
+        };
+        localStorage.setItem(note.id, JSON.stringify(data));
+      };
+
+      const removeNote = (note) => {
+        note.classList.add("peeling");
+        note.addEventListener('animationend', () => {
+          localStorage.removeItem(note.id);
+          note.remove();
+        }, { once: true });
+      };
+
+      const addNewNote = () => {
+        const id = NOTE_KEY_PREFIX + Date.now();
+        const note = createNoteElement(id);
+        board.appendChild(note);
+      };
+
+      let activeElement = null;
+      let offsetX = 0, offsetY = 0;
+
+      function startDrag(e, element) {
+        if (element.classList.contains("peeling")) return; 
+
+        activeElement = element;
+        const rect = activeElement.getBoundingClientRect();
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
+        
+        activeElement.style.cursor = 'grabbing';
+        activeElement.style.zIndex = getNextZIndex();
+        document.addEventListener('mousemove', handleDrag);
+        document.addEventListener('mouseup', stopDrag);
+      }
+
+      function handleDrag(e) {
+        if (activeElement) {
+          activeElement.style.left = `${e.clientX - offsetX}px`;
+          activeElement.style.top = `${e.clientY - offsetY}px`;
+        }
+      }
+
+      function stopDrag() {
+        if (activeElement) {
+          activeElement.style.cursor = 'default';
+          saveNote(activeElement);
+          activeElement = null;
+          document.removeEventListener('mousemove', handleDrag);
+          document.removeEventListener('mouseup', stopDrag);
+        }
+      }
+
+      loadNotes();
+      addNoteBtn.addEventListener("click", addNewNote);
+    });
+  </script>
+</body>
+
+</html>

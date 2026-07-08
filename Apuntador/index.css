@@ -1,0 +1,184 @@
+:root {
+    --bg-page: #006085;
+    --bg-element: #d6e8f0;
+    --text-color: #537a8c;
+    --text-dark: #003a52;
+    --gap-size: 6px;
+}
+
+body {
+    background: linear-gradient(135deg, var(--bg-page), #007ba8) fixed;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.widget-panel {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 40px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    width: 100%;
+    max-width: 650px;
+}
+
+.form-layout {
+    display: flex;
+    gap: var(--gap-size);
+    height: 170px;
+}
+
+.inputs-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-size);
+    flex: 1;
+}
+
+input, #texto, .btn-enviar, .btn-datos {
+    border: none;
+    background: var(--bg-element);
+    color: var(--text-dark);
+    font-size: 15px;
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+input::placeholder, #texto::placeholder {
+    color: var(--text-color);
+}
+
+input {
+    padding: 15px 25px;
+    border-radius: 35px 0 0 0;
+    height: 55px;
+}
+
+#texto {
+    padding: 15px 25px;
+    border-radius: 0 0 0 35px;
+    resize: none;
+    flex: 1;
+}
+
+input:focus, #texto:focus {
+    background: #e4f0f6;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.03);
+}
+
+.btn-enviar {
+    width: 120px;
+    border-radius: 0 35px 35px 0;
+    cursor: pointer;
+    font-weight: 500;
+    line-height: 1.4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-enviar:hover {
+    background: #e4f0f6;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.btn-enviar:active {
+    transform: scale(0.98);
+}
+
+.btn-datos {
+    width: 100%;
+    padding: 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 14px;
+    background: rgba(214, 232, 240, 0.9);
+}
+
+.btn-datos:hover {
+    background: #e4f0f6;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* --- Botón Eliminar (Nuevo) --- */
+.btn-eliminar {
+    background: rgba(255, 99, 71, 0.2);
+    border: 1px solid rgba(255, 99, 71, 0.4);
+    color: #ff9e91;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-eliminar:hover {
+    background: rgba(255, 99, 71, 0.5);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(255, 99, 71, 0.3);
+}
+
+/* --- Modal y Tabla --- */
+#modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.table-container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 900px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 15px 20px;
+    text-align: left;
+    color: #e0f7fa;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+th {
+    font-weight: bold;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transition: background 0.3s;
+}

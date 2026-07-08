@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+        integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <div id="fullvideo">
+        <div class="container">
+            <video src="video.mp4" id="video"></video>
+       <div class="controls">
+    <div class="timeline-container">
+        <div class="timeline">
+            <div class="bar">
+                <div class="inner"></div>
+                <div class="seek-tooltip" id="seek-tooltip">00:00</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bottom-controls">
+        <div class="left-controls">
+            <button onclick="rewind(event)"><img id="rewind" src="imagenes/rewind-5.png"></button>
+            <button onclick="play(event)">
+                <img class="fa fa-play" src="imagenes/play.png">
+                <img class="fa fa-pause" src="imagenes/pause.png" style="display:none;">
+            </button>
+            <button onclick="forward(event)"><img id="forward" src="imagenes/forward-5.png"></button>
+            
+ <div class="volume-container">
+    <button id="mute-btn"><img id="vol-icon" src="imagenes/volumehigh.png"></button>
+    <div class="volume-slider-wrapper">
+        <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="1">
+    </div>
+</div>
+
+            <div class="time-display">
+                <span id="current-time">00:00</span> / <span id="total-time">00:00</span>
+            </div>
+        </div>
+
+        <div class="right-controls">
+    <button id="shuffle-btn"><img id="repeat-icon" src="imagenes/repeat.png" style="opacity: 0.5;"></button>
+            
+            <button id="fullvideobtn" onclick="fullScreen(event)">
+                <img class="fa fa-expand" src="imagenes/expand.png">
+                <img class="fa fa-contract" src="imagenes/contract.png" style="display:none;">
+            </button>
+        </div>
+    </div>
+</div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+
+</html>
+
+
+<!--
+        URL ICONOS: https://icons8.com/icon/set/media-controls/stickers
+     --><i class="fa fa-expand"></i>

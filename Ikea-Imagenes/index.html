@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor de Chinchetas</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="toolbar">
+        <a href="imagenes.html" class="btn btn-primary">Ir a Ver Imágenes</a>
+        <button id="btnBorrarTodas" class="btn btn-danger">Borrar Todas</button>
+    </div>
+
+    <p>Haz clic en cualquier parte de la imagen para añadir una chincheta.</p>
+    
+    <div id="image-container">
+        <img id="imagen" src="image2.webp" alt="Imagen producto">
+    </div>
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Añadir Chincheta</h2>
+            <div class="inputs">
+                <p>Título (ej. MULIG)</p>
+                <input id="titulo" type="text" maxlength="20">
+                <p>Información (ej. Barra extensible)</p>
+                <input id="informacion" type="text" maxlength="50">
+                <p>Precio (€)</p>
+                <input id="precio" type="number" step="0.01">
+                <button id="btnGuardar" class="btn btn-primary">Guardar Chincheta</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+</html>
